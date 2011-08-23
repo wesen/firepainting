@@ -1,12 +1,19 @@
+/*
+ * Firepainting arduino code
+ *
+ * http://vimeo.com/21213264
+ *
+ * (c) 2010 - 2011
+ *
+ * Author: Manuel Odendahl - wesen@ruinwesen.com
+ * Author: Andrej Primozic
+ * Author: Sanela Jahic
+ */
+
 #include <Wire.h>
 
 // 21082011 Portland, Oregon, Appendix project space
 // pin 2 na Duemillanove vezati na GND = Slave id1
-
-
-
-
-
 
 // setup:
 // - connect arduino Nano (master) to 2 arduino Mega slaves
@@ -14,7 +21,6 @@
 // - master without ID pin
 // - ID:1 22 -> GND
 // - ID:2 23 -> GND
-
 
 // nozzles and pumps are counted from 0 to ....
 
