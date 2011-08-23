@@ -1,5 +1,8 @@
 # Firepainting #
 
-Arduino code for firepainting
+Arduino code for firepainting, by Sanela Jahic
 
-More information: http://sanelajahic.blogspot.com/
+More information: 
+
+* http://sanelajahic.blogspot.com/
+* http://vimeo.com/21213264
