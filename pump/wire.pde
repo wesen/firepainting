@@ -60,7 +60,7 @@ void setupWire() {
   if (!IS_ARDUINO_NOZZLE) {
     id = 0;
   } else {
-    readId();
+    id = 1;
   }
   idString[sizeof(idString) - 1] = id + '0';
 
