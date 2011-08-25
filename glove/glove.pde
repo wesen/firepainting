@@ -38,13 +38,7 @@
 
 uint8_t id = 1; //0
 
-#if defined(__AVR_ATmega1280__)
-#define ARDUINO_MEGA
-#else
-#define ARDUINO_DUEMILANOVE
-#endif
-
-#define IS_ARDUINO_NOZZLE 1
+#define IS_ARDUINO_NOZZLE 0
 
 
 //#############################################################
@@ -69,12 +63,8 @@ boolean calibration_status = false; //for calibration
 
 // ==========================================================================================
 void masterHandleWire() {
-
-
  getGloveData();  // function for reading the glove sensors
- actuate();       // calculate and exe. function for valves and pumps
-
-
+ actuate();
 }
 
 
@@ -510,62 +500,12 @@ void actuate(){     // it is inside masterHandleWire
 }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-// ==========================================================================================
-void slaveSetValve(uint8_t valve, uint8_t state) {
-  #ifdef DEBUG
-  Serial.print("VALVE ");
-  Serial.print(valve, DEC);
-  if (state) {
-    Serial.println(" OPEN");
-  }
-  else {
-    Serial.println(" CLOSE");
-  }
-  #endif
-
-   // control valve here
-   // digitalWrite(  valve, state ? HIGH : LOW); //
-   // digitalWrite( 24 + valve, state ? HIGH : LOW); // tko je bilo original za Mega slaves
-    digitalWrite( valve, state ? HIGH : LOW); // za tamalo elektroniko za Portland
+void handleMsg(uint8_t *msg, uint8_t cnt) {
+  // do nothing here on the slave
+  Serial.println("handleMsg");
 }
 
-// ==========================================================================================
-void slaveSetPump(uint8_t pump, uint8_t value) {
-  #ifdef DEBUG
-  Serial.print("PUMP ");
-  Serial.print(pump, DEC);
-  Serial.print(" TO ");
-  Serial.println(value, DEC);
-  #endif
-
-  // set PWM value for pump
-  // analogWrite( 2 + pump, value); //2+ because of rxtx pins) // original za Mega slaves
-  analogWrite( pump, value); //2+ because of rxtx pins) // tamala elektronka za Potrland
-  // delay (10); // NO DELAY - it is inside interupt
-}
-
-
-
-
-
-#if IS_ARDUINO_NOZZLE
-char idString[] = "nozleX";
-#else
 char idString[] = "gloveX";
-#endif
 
 #define CMD_VALVE 1
 #define CMD_PUMP  2
@@ -576,25 +516,8 @@ void handleWire() {
   }
 }
 
-
-void handleMsg(uint8_t *msg, uint8_t cnt) {
-  if (!isMaster()) {
-    switch (msg[0]) {
-    case CMD_VALVE:
-      slaveSetValve(msg[1], msg[2]);
-      break;
-
-    case CMD_PUMP:
-      slaveSetPump(msg[1], msg[2]);
-      break;
-    }
-  }
-  else {
-    Serial.println("handleMsg");
-  }
-}
-
 void onRequestHandler() {
+//  Serial.println("on request");
   uint8_t msg[3] = {
     0, 1, 2       };
   if (!isMaster()) {
@@ -603,6 +526,8 @@ void onRequestHandler() {
 }
 
 void openValve(uint8_t id, uint8_t nozzle) {
+//  Serial.println("send openValve");
+//  Serial.println(id, DEC);
   Wire.beginTransmission(id);
   uint8_t msg[3] = {
     CMD_VALVE, nozzle, 1     };
@@ -613,6 +538,8 @@ void openValve(uint8_t id, uint8_t nozzle) {
 }
 
 void closeValve(uint8_t id, uint8_t nozzle) {
+//  Serial.println("send closeValve");
+//  Serial.println(id, DEC);
   Wire.beginTransmission(id);
   uint8_t msg[3] = {
     CMD_VALVE, nozzle, 0     };
@@ -627,7 +554,7 @@ void setPump(uint8_t id, uint8_t nozzle, uint8_t value) {
   uint8_t msg[3] = {
     CMD_PUMP, nozzle, value     };
   Wire.send(msg, 3);
-  Wire.endTransmission();
+  int ret = Wire.endTransmission();
       //delay(10);
       delayMicroseconds(1500);
 }
@@ -648,10 +575,6 @@ void setup() {
   pinMode(39, OUTPUT);
   pinMode(41, OUTPUT);
 */
-
-// to je za tamalo elektroniko za Portland (triac valves)
-  pinMode(9, OUTPUT);
-  pinMode(8, OUTPUT);
 
 /*  Tako je mapirano na tamali elektronki za Portand
  pumpa_1 = 11;
@@ -674,5 +597,5 @@ void setup() {
 void loop() {
   handleWire();
 
-  delay(100);  // modify to increse the speed of the code ?
+  delay(1000);  // modify to increse the speed of the code ?
 }
