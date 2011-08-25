@@ -43,6 +43,10 @@ void printBuf(uint8_t *msg, uint8_t cnt) {
 
 
 void onReceiveHandler(int foo) {
+  #ifdef DEBUG
+  Serial.println("receive handler");
+  #endif
+  
   uint8_t msg[3];
   uint8_t idx = 0;
 

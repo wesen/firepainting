@@ -532,9 +532,14 @@ void openValve(uint8_t id, uint8_t nozzle) {
   uint8_t msg[3] = {
     CMD_VALVE, nozzle, 1     };
   Wire.send(msg, 3);
-  Wire.endTransmission();
+  int ret = Wire.endTransmission();
      //delay(10); //10
       delayMicroseconds(1500);
+        #ifdef DEBUG
+  Serial.println("sent bytes");
+  Serial.println(ret, DEC);
+  #endif
+
 }
 
 void closeValve(uint8_t id, uint8_t nozzle) {
@@ -544,9 +549,13 @@ void closeValve(uint8_t id, uint8_t nozzle) {
   uint8_t msg[3] = {
     CMD_VALVE, nozzle, 0     };
   Wire.send(msg, 3);
-  Wire.endTransmission();
+  int ret = Wire.endTransmission();
       //delay(10); // 10
       delayMicroseconds(1500);
+  #ifdef DEBUG
+  Serial.println("sent bytes");
+  Serial.println(ret, DEC);
+  #endif
 }
 
 void setPump(uint8_t id, uint8_t nozzle, uint8_t value) {
@@ -555,6 +564,10 @@ void setPump(uint8_t id, uint8_t nozzle, uint8_t value) {
     CMD_PUMP, nozzle, value     };
   Wire.send(msg, 3);
   int ret = Wire.endTransmission();
+  #ifdef DEBUG
+  Serial.println("sent bytes");
+  Serial.println(ret, DEC);
+  #endif
       //delay(10);
       delayMicroseconds(1500);
 }
